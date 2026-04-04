@@ -121,7 +121,6 @@ function loadData() {
 }
 
 window.onload = loadData;
-
 // ===============================
 // パーティ範囲取得
 // ===============================
@@ -159,6 +158,7 @@ function createGroups() {
       totalPower: filtered.reduce((sum, m) => sum + m.power, 0)
     });
 
+    // 重複禁止：選ばれたメンバーを除外
     availableMembers = availableMembers.filter(m => !filtered.includes(m));
   }
 
@@ -200,35 +200,7 @@ function balanceGroupA(groups) {
     return diffA < diffB ? a : b;
   });
 
-  strong.members = strong.members.filter(m => m !== candidate);
-  weak.members.push(candidate);
-}
-
-// Party4〜6 の均一化
-function balanceGroupB(groups) {
-  const p4 = groups[3];
-  const p5 = groups[4];
-  const p6 = groups[5];
-  if (!p4 || !p5 || !p6) return;
-
-  const arr = [p4, p5, p6];
-  arr.sort((a, b) => b.totalPower - a.totalPower);
-
-  const strong = arr[0];
-  const weak   = arr[2];
-
-  let diff = strong.totalPower - weak.totalPower;
-  if (diff <= 3) return;
-
-  if (strong.members.length === 0) return;
-
-  const candidate = strong.members.reduce((a, b) => {
-    const diffA = Math.abs((strong.totalPower - a.power) - (weak.totalPower + a.power));
-    const diffB = Math.abs((strong.totalPower - b.power) - (weak.totalPower + b.power));
-    return diffA < diffB ? a : b;
-  });
-
-  strong.members = strong.members.filter(m => m !== candidate);
+    strong.members = strong.members.filter(m => m !== candidate);
   weak.members.push(candidate);
 }
 
@@ -238,7 +210,6 @@ function recalcTotals(groups) {
     g.totalPower = g.members.reduce((sum, m) => sum + m.power, 0);
   });
 }
-
 // ===============================
 // パーティUI表示（アイコンなし版）
 // ===============================
@@ -291,6 +262,30 @@ function showSection(section) {
   document.getElementById(section).style.display = "block";
   window.scrollTo(0, 0);
 }
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+  
+
+
+
 
 
 
