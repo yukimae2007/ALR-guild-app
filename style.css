@@ -317,3 +317,63 @@ input, select {
   }
 }
 
+/* ============================
+   削除ボタン（カード右上）
+   ============================ */
+.delete-btn {
+  background: #a33a3a;
+  border: 1px solid #c9a86a;
+  color: #f4e4c1;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.delete-btn:hover {
+  background: #d14a4a;
+  box-shadow: 0 0 8px #ffb3a3;
+}
+
+
+/* ============================
+   インライン編集用 input
+   ============================ */
+.edit-input {
+  width: 95%;
+  padding: 6px;
+  font-size: 16px;
+  background: rgba(43, 31, 20, 0.9);
+  border: 2px solid #c9a86a;
+  border-radius: 6px;
+  color: #ffd27f;
+  font-family: "Cinzel", serif;
+  box-shadow: 0 0 10px #000 inset;
+}
+
+
+/* ============================
+   編集中の視覚効果（わかりやすく）
+   ============================ */
+.editing {
+  outline: 2px solid #ffd27f;
+  background: rgba(255, 210, 127, 0.1);
+  border-radius: 6px;
+}
+
+
+/* ============================
+   スマホ最適化（編集時の崩れ防止）
+   ============================ */
+@media (max-width: 600px) {
+  .edit-input {
+    font-size: 18px;
+    padding: 10px;
+  }
+
+  .delete-btn {
+    padding: 6px 10px;
+    font-size: 16px;
+  }
+}
