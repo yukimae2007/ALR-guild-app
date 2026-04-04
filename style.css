@@ -1,0 +1,319 @@
+body {
+  background: url("guild_hall_bg.jpg");
+  background-size: cover;
+  font-family: "Cinzel", serif;
+  color: #f4e4c1;
+  padding: 20px;
+}
+
+.guild-title {
+  text-align: center;
+  font-size: 36px;
+  color: #ffd27f;
+  text-shadow: 0 0 10px #000;
+}
+
+.guild-subtitle {
+  margin-top: 30px;
+  color: #ffd27f;
+}
+
+.panel {
+  background: rgba(59, 42, 26, 0.9);
+  border: 2px solid #c9a86a;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+input, select {
+  display: block;
+  width: 90%;
+  margin: 8px 0;
+  padding: 8px;
+  background: rgba(43, 31, 20, 0.8);
+  border: 1px solid #c9a86a;
+  color: #f4e4c1;
+  border-radius: 6px;
+}
+
+.button {
+  background: #8b5a2b;
+  border: 2px solid #c9a86a;
+  padding: 10px 20px;
+  color: #f4e4c1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #d4af37;
+}
+
+.big-button {
+  display: block;
+  margin: 20px auto;
+  font-size: 20px;
+}
+
+/* 冒険者カード */
+.adventurer-card {
+  background: rgba(43, 31, 20, 0.9);
+  border: 2px solid #c9a86a;
+  border-radius: 10px;
+  padding: 15px;
+  width: 220px;
+  margin: 10px;
+  color: #f4e4c1;
+  font-family: "Cinzel", serif;
+  box-shadow: 0 0 10px #000;
+  transition: 0.2s;
+  animation: summon 0.4s ease-out;
+}
+
+.adventurer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 15px #d4af37;
+}
+
+@keyframes summon {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rank-badge {
+  background: #8b5a2b;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid #c9a86a;
+  font-size: 12px;
+}
+
+.name {
+  margin: 0;
+  font-size: 20px;
+  color: #ffd27f;
+}
+
+.stat {
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.member-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* パーティUI */
+.party {
+  background: rgba(59, 42, 26, 0.85);
+  border: 2px solid #c9a86a;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 0 15px #000;
+}
+
+.party-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.party-emblem {
+  width: 60px;
+  height: 60px;
+}
+
+.party-power {
+  margin-top: 10px;
+  background: rgba(200, 150, 80, 0.2);
+  border: 1px solid #d4af37;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 18px;
+  color: #ffd27f;
+}
+
+.party-power .value {
+  animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 5px #ffd27f; }
+  to   { text-shadow: 0 0 15px #ffea9e; }
+}
+
+.party-members {
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ホーム画面 */
+.home-screen {
+  background: url("guild_hall_bg.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-content {
+  text-align: center;
+  background: rgba(43, 31, 20, 0.85);
+  padding: 40px;
+  border: 3px solid #c9a86a;
+  border-radius: 15px;
+  box-shadow: 0 0 20px #000;
+}
+
+.guild-emblem {
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.home-title {
+  font-size: 36px;
+  color: #ffd27f;
+  margin-bottom: 30px;
+  text-shadow: 0 0 10px #000;
+}
+
+.home-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.menu-button {
+  background: #8b5a2b;
+  border: 2px solid #c9a86a;
+  padding: 15px;
+  font-size: 20px;
+  color: #f4e4c1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.menu-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #d4af37;
+}
+
+/* 炎のゆらめきエフェクト */
+.fire-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255,120,0,0.25), rgba(0,0,0,0));
+  animation: firePulse 3s infinite ease-in-out;
+  mix-blend-mode: screen;
+}
+
+@keyframes firePulse {
+  0% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(1.1); }
+  100% { opacity: 0.2; transform: scale(1); }
+}
+
+/* 光の粒子 */
+.particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: rgba(255,255,200,0.8);
+  border-radius: 50%;
+  animation: floatUp 6s infinite ease-in-out;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(-200px) scale(1); opacity: 0; }
+}
+
+.magic-circle {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.4;
+  animation: rotateCircle 12s linear infinite;
+}
+
+@keyframes rotateCircle {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.party-range {
+  margin-bottom: 10px;
+}
+
+.party-range input {
+  width: 120px;
+  margin-left: 5px;
+}
+
+/* スマホ用レイアウト */
+@media (max-width: 600px) {
+
+  .adventurer-card,
+  .party {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .party-members {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .home-content {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .menu-button {
+    font-size: 18px;
+    padding: 12px;
+  }
+
+  .guild-emblem {
+    width: 120px;
+  }
+
+  .party-emblem {
+    width: 60px;
+  }
+}
+

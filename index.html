@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ALR　Guild Grouping App</title>
+  <link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<div id="home" class="home-screen">
+  <div class="home-content">
+    <img src="guild_emblem.png" class="guild-emblem">
+　　<img src="magic_circle.png" class="magic-circle">
+
+<div class="particles">
+  <div class="particle" style="left:20%; animation-delay:0s;"></div>
+  <div class="particle" style="left:40%; animation-delay:1s;"></div>
+  <div class="particle" style="left:60%; animation-delay:2s;"></div>
+  <div class="particle" style="left:80%; animation-delay:3s;"></div>
+</div>
+
+    <h1 class="home-title">Guild Headquarters</h1>
+
+    <div class="home-menu">
+      <button class="menu-button" onclick="showSection('register')">ギルドメンバー登録</button>
+      <button class="menu-button" onclick="showSection('list')">メンバー一覧</button>
+      <button class="menu-button" onclick="showSection('party')">パーティ編成</button>
+    </div>
+  </div>
+</div>
+<div class="fire-glow"></div>
+
+<body>
+
+<h1 class="guild-title">⚔️ Guild Management System ⚔️</h1>
+
+<div class="panel">
+  <h2>ギルドメンバー登録</h2>
+  <input id="name" placeholder="プレイヤー名">
+  <input id="power" placeholder="戦闘力" type="number" step="0.1">
+  <input id="rank" placeholder="ランク" type="number">
+  <select id="team">
+    <option value="1st">1st 部隊</option>
+    <option value="2nd">2nd 部隊</option>
+  </select>
+  <button class="button" onclick="addMember()">登録する</button>
+</div>
+
+<div class="panel">
+  <h2>ギルドメンバー一覧</h2>
+  <div id="memberList" class="member-list"></div>
+</div>
+
+<button class="button big-button" onclick="createGroups()">パーティ自動編成</button>
+
+<h2 class="guild-subtitle">パーティ編成結果</h2>
+<div class="panel">
+  <h2>パーティ別 抽出条件</h2>
+
+  <div class="party-range">
+    <label>Party 1: </label>
+    <input id="p1_min" type="number" placeholder="最小戦闘力">
+    <input id="p1_max" type="number" placeholder="最大戦闘力">
+  </div>
+
+  <div class="party-range">
+    <label>Party 2: </label>
+    <input id="p2_min" type="number" placeholder="最小戦闘力">
+    <input id="p2_max" type="number" placeholder="最大戦闘力">
+  </div>
+
+  <div class="party-range">
+    <label>Party 3: </label>
+    <input id="p3_min" type="number" placeholder="最小戦闘力">
+    <input id="p3_max" type="number" placeholder="最大戦闘力">
+  </div>
+
+  <div class="party-range">
+    <label>Party 4: </label>
+    <input id="p4_min" type="number" placeholder="最小戦闘力">
+    <input id="p4_max" type="number" placeholder="最大戦闘力">
+  </div>
+
+  <div class="party-range">
+    <label>Party 5: </label>
+    <input id="p5_min" type="number" placeholder="最小戦闘力">
+    <input id="p5_max" type="number" placeholder="最大戦闘力">
+  </div>
+
+  <div class="party-range">
+    <label>Party 6: </label>
+    <input id="p6_min" type="number" placeholder="最小戦闘力">
+    <input id="p6_max" type="number" placeholder="最大戦闘力">
+  </div>
+</div>
+
+<div id="result"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
