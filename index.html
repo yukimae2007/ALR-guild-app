@@ -2,8 +2,17 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>ADRL Tactical System</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0f172a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ADRL">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <style>
   :root {
     --accent: #2563eb;
@@ -266,6 +275,128 @@
     color: var(--gold);
     font-weight: bold;
   }
+
+  /* ===== INTRO SCREEN ===== */
+  #intro-screen {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at top, #1b2735 0%, #090a0f 60%, #000 100%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    transition: opacity 0.6s ease;
+  }
+  #intro-logo {
+    width: min(560px, 82vw);
+    opacity: 0;
+    transform: scale(0.2);
+    filter: brightness(0.4);
+    transition:
+      transform 2.8s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 2.8s ease,
+      filter 0.4s ease;
+    border-radius: 10px;
+  }
+  #intro-logo.logo-in {
+    transform: scale(1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  #intro-logo.logo-flash {
+    filter: brightness(2.2);
+    box-shadow: 0 0 60px rgba(120, 200, 255, 0.95);
+  }
+  #intro-title {
+    margin-top: 32px;
+    font-family: 'Rajdhani', 'Orbitron', sans-serif;
+    font-size: clamp(13px, 3.8vw, 24px);
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    opacity: 0;
+    position: relative;
+    padding: 12px 4px;
+    background: linear-gradient(
+      180deg,
+      #ffffff  0%,
+      #d0e8ff 18%,
+      #8ab8e0 38%,
+      #c8dff0 55%,
+      #7090b0 75%,
+      #b0cce0 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter:
+      drop-shadow(0 0 8px rgba(100,180,255,0.8))
+      drop-shadow(0 0 20px rgba(40,100,200,0.5))
+      drop-shadow(0 2px 4px rgba(0,0,0,0.9));
+    white-space: nowrap;
+  }
+  #intro-title::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #4a7aaa, #a0c8e8, #c8e0f8, #a0c8e8, #4a7aaa, transparent);
+  }
+  #intro-title::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #4a7aaa, #a0c8e8, #c8e0f8, #a0c8e8, #4a7aaa, transparent);
+  }
+  #intro-subtitle {
+    margin-top: 14px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(8px, 1.8vw, 11px);
+    font-weight: 500;
+    letter-spacing: 0.55em;
+    background: linear-gradient(90deg, #4a6a8a, #7090b0, #4a6a8a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-align: center;
+    opacity: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: opacity 0.6s ease;
+  }
+  #intro-flash {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, #ffffff 0%, #7fc4ff 40%, transparent 75%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+  #intro-scanline {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.07) 2px,
+      rgba(0,0,0,0.07) 4px
+    );
+    pointer-events: none;
+    opacity: 0.35;
+  }
+  @keyframes introBlink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+  .title-blink {
+    animation: introBlink 0.5s ease-in-out 3;
+  }
 </style>
 </head>
 <body>
@@ -275,6 +406,16 @@
   <div class="nav-item" data-tab="input">戦力入力</div>
   <div class="nav-item" data-tab="config">グループ設定</div>
   <div class="nav-item" data-tab="map">拠点マップ</div>
+</div>
+
+<!-- INTRO SCREEN -->
+<div id="intro-screen">
+  <div id="intro-scanline"></div>
+  <div id="intro-flash"></div>
+  <img id="intro-logo" src="rogo.jpg" alt="ADRL" onerror="this.style.display='none'; document.getElementById('intro-icon').style.display='block'">
+  <div id="intro-icon" style="display:none; font-size:clamp(80px,20vw,140px);">⚔️</div>
+  <div id="intro-title">ADRL &nbsp;—&nbsp; Exclusive Troop Deployment App</div>
+  <div id="intro-subtitle">Tactical &nbsp;·&nbsp; Strategic &nbsp;·&nbsp; Decisive</div>
 </div>
 
 <!-- TOP -->
@@ -578,7 +719,117 @@
     } catch(e) {}
   }
 
+
+  // ===== INTRO ANIMATION =====
+  (function() {
+    const screen = document.getElementById('intro-screen');
+    const logo   = document.getElementById('intro-logo');
+    const icon   = document.getElementById('intro-icon');
+    const title  = document.getElementById('intro-title');
+    const flash  = document.getElementById('intro-flash');
+    const sub    = document.getElementById('intro-subtitle');
+    const nav    = document.querySelector('.nav-bar');
+
+    const LOGO_IN       = 2800;  // ズームイン完了
+    const FLASH_LEN     = 500;   // フラッシュ時間
+    const BLINK_DELAY   = 300;   // フラッシュ後→点滅開始までの余韻
+    const BLINK_ONCE    = 500;   // 1回の点滅周期
+    const BLINK_COUNT   = 3;
+    const WAIT          = 2000;  // 点滅後の静止
+    const FADE_OUT      = 700;   // フェードアウト時間
+
+    nav.style.display = 'none';
+
+    // ① ロゴ ズームイン（CSSトランジションで）
+    requestAnimationFrame(() => {
+      logo.classList.add('logo-in');
+    });
+
+    // ② フラッシュ
+    setTimeout(() => {
+      logo.classList.add('logo-flash');
+      flash.style.opacity = '0.85';
+      setTimeout(() => {
+        logo.classList.remove('logo-flash');
+        flash.style.opacity = '0';
+      }, FLASH_LEN);
+    }, LOGO_IN);
+
+    // ③ タイトル表示 → 点滅
+    setTimeout(() => {
+      title.style.opacity = '1';
+      setTimeout(() => {
+        title.classList.add('title-blink');
+        title.addEventListener('animationend', () => {
+          title.classList.remove('title-blink');
+          title.style.opacity = '1';
+        }, { once: true });
+      }, BLINK_DELAY);
+    }, LOGO_IN + FLASH_LEN);
+
+    // ④ サブタイトルフェードイン
+    setTimeout(() => {
+      sub.style.transition = 'opacity 0.8s ease';
+      sub.style.opacity = '1';
+    }, LOGO_IN + FLASH_LEN + BLINK_DELAY + BLINK_ONCE * BLINK_COUNT + 300);
+
+    // ⑤ フェードアウト → 入力タブへ
+    const totalDelay = LOGO_IN + FLASH_LEN + BLINK_DELAY + BLINK_ONCE * BLINK_COUNT + WAIT;
+    setTimeout(() => {
+      screen.style.opacity = '0';
+      setTimeout(() => {
+        screen.style.display = 'none';
+        nav.style.display = '';
+        showTab('input');
+      }, FADE_OUT);
+    }, totalDelay);
+  })();
+
 })();
 </script>
 </body>
 </html>
+
+
+
+ 
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
