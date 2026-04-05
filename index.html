@@ -1,101 +1,584 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>Guild Manager</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADRL Tactical System</title>
+<style>
+  :root {
+    --accent: #2563eb;
+    --panel-bg: rgba(10, 20, 30, 0.95);
+    --gold: #ffca28;
+    --dark: #0f172a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--dark);
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .nav-bar {
+    width: 100%;
+    background: #1e293b;
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #334155;
+  }
+  .nav-item {
+    padding: 15px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #94a3b8;
+    transition: color 0.2s;
+    user-select: none;
+  }
+  .nav-item:hover { color: #cbd5e1; }
+  .nav-item.active {
+    color: var(--accent);
+    border-bottom: 3px solid var(--accent);
+  }
+  .container {
+    width: 95%;
+    max-width: 800px;
+    padding: 20px;
+    display: none;
+  }
+  .container.active { display: block; }
+  .hero-section { text-align: center; padding: 40px 20px; }
+  .status-card {
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--accent);
+  }
+  textarea {
+    width: 100%;
+    height: 250px;
+    background: #1e293b;
+    color: #fff;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    padding: 12px;
+    box-sizing: border-box;
+    font-family: monospace;
+    font-size: 14px;
+    resize: vertical;
+  }
+  textarea:focus { outline: none; border-color: var(--accent); }
+  .config-table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 10px;
+    color: #94a3b8;
+    text-align: center;
+    padding: 0 4px;
+  }
+  .group-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .group-row input {
+    background: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 2px;
+    color: #333;
+    text-align: center;
+    width: 100%;
+    font-size: 13px;
+  }
+  .group-row input[readonly] {
+    background: #cbd5e1;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 10px;
+    color: #1e293b;
+  }
+  .map-wrapper {
+    position: relative;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #0a1420;
+    min-height: 300px;
+  }
+  .map-img { width: 100%; height: auto; display: block; opacity: 0.8; }
+  .overlay-badge {
+    position: absolute;
+    background: rgba(10, 20, 30, 0.93);
+    border: 1px solid var(--accent);
+    border-radius: 5px;
+    padding: 6px 8px;
+    width: 130px;
+    font-size: 9px;
+    pointer-events: none;
+    line-height: 1.5;
+  }
+  .overlay-badge .badge-title {
+    font-weight: bold;
+    color: var(--gold);
+    font-size: 10px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid rgba(37,99,235,0.4);
+    padding-bottom: 3px;
+  }
+  .overlay-badge .badge-row {
+    display: flex;
+    justify-content: space-between;
+    color: #cbd5e1;
+    font-size: 8.5px;
+    padding: 1px 0;
+  }
+  .overlay-badge .badge-row .pow-val {
+    color: #93c5fd;
+    font-weight: bold;
+    min-width: 28px;
+    text-align: right;
+  }
+  .overlay-badge .badge-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    border-top: 1px solid rgba(37,99,235,0.4);
+    padding-top: 3px;
+    font-size: 8.5px;
+    color: #94a3b8;
+  }
+  .overlay-badge .badge-total .total-val {
+    color: var(--gold);
+    font-weight: bold;
+  }
+  .pos-g1 { bottom: 6%; left: 42%; }
+  .pos-g2 { bottom: 32%; left: 5%; }
+  .pos-g3 { bottom: 32%; right: 5%; }
+  .pos-g4 { top: 15%; left: 10%; }
+  .pos-g5 { top: 15%; left: 41%; }
+  .pos-g6 { top: 15%; right: 10%; }
+  .btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn:hover { background: #1d4ed8; }
+  .btn:active { transform: scale(0.98); }
+  .player-count {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 8px;
+    text-align: right;
+  }
+  h3 { color: #e2e8f0; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+  .info-box {
+    background: rgba(37,99,235,0.1);
+    border: 1px solid rgba(37,99,235,0.3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #93c5fd;
+    margin-bottom: 16px;
+  }
+  .deploy-result {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 13px;
+    border: 1px solid #334155;
+  }
+  .deploy-result .group-title {
+    color: var(--gold);
+    font-weight: bold;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  .deploy-result .player-list {
+    color: #cbd5e1;
+    line-height: 1.8;
+    padding-left: 12px;
+  }
+  .unassigned { color: #f87171; }
+  .group-list-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .group-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px 12px;
+    flex: 1 1 180px;
+    min-width: 160px;
+  }
+  .group-card-title {
+    font-weight: bold;
+    color: var(--gold);
+    font-size: 13px;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #334155;
+  }
+  .group-card-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #cbd5e1;
+    padding: 2px 0;
+  }
+  .group-card-row .g-pow {
+    color: #93c5fd;
+    font-weight: bold;
+    min-width: 36px;
+    text-align: right;
+  }
+  .group-card-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-top: 6px;
+    padding-top: 5px;
+    border-top: 1px solid #334155;
+    color: #94a3b8;
+  }
+  .group-card-total .g-total-val {
+    color: var(--gold);
+    font-weight: bold;
+  }
+</style>
 </head>
-
 <body>
 
-  <!-- ホーム画面 -->
-  <div id="home" class="home-screen">
-    <div class="home-content">
-      <img src="guild_emblem.png" class="guild-emblem">
-      <h1 class="home-title">Guild Management</h1>
+<div class="nav-bar">
+  <div class="nav-item active" data-tab="home">TOP</div>
+  <div class="nav-item" data-tab="input">戦力入力</div>
+  <div class="nav-item" data-tab="config">グループ設定</div>
+  <div class="nav-item" data-tab="map">拠点マップ</div>
+</div>
 
-      <div class="home-menu">
-        <button class="menu-button" onclick="showSection('register')">メンバー登録</button>
-        <button class="menu-button" onclick="showSection('party')">パーティ編成</button>
-      </div>
+<!-- TOP -->
+<div id="tab-home" class="container active">
+  <div class="hero-section">
+    <div style="font-size:48px; margin-bottom:16px;">⚔️</div>
+    <h2 style="color: var(--gold); letter-spacing:2px;">ADRL TACTICAL</h2>
+    <div class="status-card">
+      <p style="color:#94a3b8; margin:0 0 16px;">Commander、システム稼働準備完了。</p>
+      <button class="btn" id="start-btn">▶ 作戦開始</button>
     </div>
   </div>
+</div>
 
-  <!-- メンバー登録画面 -->
-  <div id="register" style="display:none;">
-    <h1 class="guild-title">ギルドメンバー登録</h1>
-
-    <div class="panel register-panel">
-      <label>名前</label>
-      <input type="text" id="name">
-
-      <label>戦闘力</label>
-      <input type="number" id="power">
-
-      <label>ランク</label>
-      <input type="number" id="rank">
-
-      <label>部隊</label>
-      <input type="text" id="team">
-
-      <button class="button big-button" onclick="addMember()">登録</button>
-    </div>
-
-    <h2 class="guild-subtitle">登録済みメンバー</h2>
-    <div id="memberList" class="member-list"></div>
+<!-- 戦力入力 -->
+<div id="tab-input" class="container">
+  <h3>📋 戦力データ入力</h3>
+  <div class="info-box">
+    1行に「名前 戦力値」の形式で入力してください。<br>
+    例: <code>田中 15.5</code>
   </div>
+  <textarea id="player-raw-data" placeholder="田中 15.5&#10;山田 8.2&#10;鈴木 3.1&#10;..."></textarea>
+  <div class="player-count" id="player-count">0 名入力中</div>
+  <button class="btn" id="save-players-btn">保存してグループ設定へ →</button>
+</div>
 
-  <!-- パーティ編成画面 -->
-  <div id="party" style="display:none;">
-    <h1 class="guild-title">パーティ自動編成</h1>
-
-    <div class="panel">
-      <h3>戦闘力範囲設定</h3>
-
-      <div class="party-range">Party 1:
-        <input type="number" id="p1_min" placeholder="最小">
-        <input type="number" id="p1_max" placeholder="最大">
-      </div>
-
-      <div class="party-range">Party 2:
-        <input type="number" id="p2_min" placeholder="最小">
-        <input type="number" id="p2_max" placeholder="最大">
-      </div>
-
-      <div class="party-range">Party 3:
-        <input type="number" id="p3_min" placeholder="最小">
-        <input type="number" id="p3_max" placeholder="最大">
-      </div>
-
-      <div class="party-range">Party 4:
-        <input type="number" id="p4_min" placeholder="最小">
-        <input type="number" id="p4_max" placeholder="最大">
-      </div>
-
-      <div class="party-range">Party 5:
-        <input type="number" id="p5_min" placeholder="最小">
-        <input type="number" id="p5_max" placeholder="最大">
-      </div>
-
-      <div class="party-range">Party 6:
-        <input type="number" id="p6_min" placeholder="最小">
-        <input type="number" id="p6_max" placeholder="最大">
-      </div>
-
-      <button class="button big-button" onclick="createGroups()">パーティ編成</button>
-    </div>
-
-    <div id="result"></div>
+<!-- グループ設定 -->
+<div id="tab-config" class="container">
+  <h3>⚙️ グループ構成設定</h3>
+  <div class="info-box">各グループの最大人数と戦力レンジを設定してください。</div>
+  <div class="config-table-header">
+    <div style="text-align:left; padding-left:10px;">GROUP</div>
+    <div>MAX人数</div>
+    <div>MIN戦力</div>
+    <div>MAX戦力</div>
   </div>
+  <div id="group-config-list"></div>
+  <button class="btn" id="deploy-btn">⚡ 配置実行</button>
+  <div id="deploy-result"></div>
+</div>
 
-  <script src="app.js"></script>
+<!-- マップ -->
+<div id="tab-map" class="container">
+  <h3>🗺️ 拠点配置図</h3>
+  <div class="map-wrapper">
+    <img src="image_c8e9e9.jpg" class="map-img" onerror="this.style.display='none'">
+    <div id="overlay-container"></div>
+  </div>
+  <div id="group-list-container"></div>
+  <button class="btn" id="back-to-input" style="background:#475569; margin-top:12px;">← 入力を修正</button>
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY  = 'adrl_players_v1';
+  const CONFIG_KEY   = 'adrl_config_v1';
+
+  const DEFAULT_CONFIG = [
+    { name: "Group 4", max: 25, minPow: 10, maxPow: 999, pos: "pos-g4" },
+    { name: "Group 5", max: 25, minPow: 10, maxPow: 999, pos: "pos-g5" },
+    { name: "Group 6", max: 25, minPow: 10, maxPow: 999, pos: "pos-g6" },
+    { name: "Group 2", max: 25, minPow: 2,  maxPow: 10,  pos: "pos-g2" },
+    { name: "Group 3", max: 25, minPow: 2,  maxPow: 10,  pos: "pos-g3" },
+    { name: "Group 1", max: 25, minPow: 0,  maxPow: 2,   pos: "pos-g1" }
+  ];
+
+  let currentConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+  let players = [];
+
+  // ===== タブ切替 =====
+  function showTab(id) {
+    document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    document.querySelector('[data-tab="' + id + '"]').classList.add('active');
+  }
+
+  // ===== ナビクリック =====
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => showTab(item.dataset.tab));
+  });
+
+  // ===== 作戦開始 =====
+  document.getElementById('start-btn').addEventListener('click', () => showTab('input'));
+
+  // ===== 入力画面 =====
+  const textarea = document.getElementById('player-raw-data');
+  const countEl  = document.getElementById('player-count');
+
+  textarea.addEventListener('input', () => {
+    const lines = textarea.value.trim().split('\n').filter(l => l.trim());
+    countEl.textContent = lines.length + ' 名入力中';
+  });
+
+  document.getElementById('save-players-btn').addEventListener('click', () => {
+    players = parsePlayers(textarea.value);
+    if (players.length === 0) {
+      alert('戦力データを入力してください。');
+      return;
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(players));
+    renderConfigPanel();
+    showTab('config');
+  });
+
+  function parsePlayers(raw) {
+    return raw.trim().split('\n')
+      .map(line => {
+        const parts = line.trim().split(/\s+/);
+        if (parts.length < 2) return null;
+        const pow = parseFloat(parts[parts.length - 1]);
+        if (isNaN(pow)) return null;
+        const name = parts.slice(0, -1).join(' ');
+        return { name, pow };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.pow - a.pow);
+  }
+
+  // ===== グループ設定パネル =====
+  function renderConfigPanel() {
+    const list = document.getElementById('group-config-list');
+    list.innerHTML = '';
+    currentConfig.forEach((g, i) => {
+      const row = document.createElement('div');
+      row.className = 'group-row';
+      row.innerHTML = `
+        <input type="text" readonly value="${g.name}">
+        <input type="number" min="1" max="99" value="${g.max}" data-i="${i}" data-field="max">
+        <input type="number" min="0" step="0.1" value="${g.minPow}" data-i="${i}" data-field="minPow">
+        <input type="number" min="0" step="0.1" value="${g.maxPow}" data-i="${i}" data-field="maxPow">
+      `;
+      list.appendChild(row);
+    });
+    list.querySelectorAll('input[data-field]').forEach(inp => {
+      inp.addEventListener('change', () => {
+        const i = parseInt(inp.dataset.i);
+        currentConfig[i][inp.dataset.field] = parseFloat(inp.value);
+      });
+    });
+  }
+
+  // ===== 配置実行 =====
+  document.getElementById('deploy-btn').addEventListener('click', () => {
+    if (players.length === 0) {
+      alert('先に戦力データを入力してください。');
+      showTab('input');
+      return;
+    }
+    const result = deployPlayers();
+    renderDeployResult(result);
+    renderMapOverlay(result);
+    showTab('map');
+  });
+
+  function deployPlayers() {
+    const groups = currentConfig.map(g => ({ ...g, members: [] }));
+
+    // グループをname基準で取得するヘルパー
+    function getGroup(name) {
+      return groups.find(g => g.name === name);
+    }
+
+    // 均等分配（ラウンドロビン）
+    // targetGroups: グループオブジェクト配列
+    // pool: 対象プレイヤー配列（重複名を除外済み）
+    // assignedSet: 配置済み名前Set（グループ間での重複排除用）
+    function distributeEvenly(targetGroups, pool, assignedSet) {
+      // 戦力降順でソート済みの pool を各グループへ順番に振り分ける
+      // 同一グループ内に同名が入らないよう、グループ内の名前もチェック
+      let gi = 0;
+      for (const p of pool) {
+        if (assignedSet.has(p.name)) continue; // 他グループ帯域で配置済みはスキップ
+
+        // 満員でないグループを gi から順に探す
+        let tried = 0;
+        while (tried < targetGroups.length) {
+          const g = targetGroups[gi % targetGroups.length];
+          gi++;
+          tried++;
+          if (g.members.length >= g.max) continue;
+          // 同一グループ内重複チェック
+          if (g.members.some(m => m.name === p.name)) continue;
+          g.members.push(p);
+          assignedSet.add(p.name);
+          break;
+        }
+      }
+    }
+
+    const assignedGlobal = new Set();
+
+    // ----- Group 4/5/6（高戦力帯）-----
+    const highGroups = ['Group 4', 'Group 5', 'Group 6'].map(getGroup).filter(Boolean);
+    // 代表グループの条件を使う（Group 4 の minPow/maxPow）
+    const highMin = highGroups[0] ? highGroups[0].minPow : 10;
+    const highMax = highGroups[0] ? highGroups[0].maxPow : 999;
+    const highPool = players.filter(p => p.pow >= highMin && p.pow < highMax);
+    distributeEvenly(highGroups, highPool, assignedGlobal);
+
+    // ----- Group 2/3（中戦力帯）-----
+    const midGroups = ['Group 2', 'Group 3'].map(getGroup).filter(Boolean);
+    const midMin = midGroups[0] ? midGroups[0].minPow : 2;
+    const midMax = midGroups[0] ? midGroups[0].maxPow : 10;
+    const midPool = players.filter(p => p.pow >= midMin && p.pow < midMax);
+    distributeEvenly(midGroups, midPool, assignedGlobal);
+
+    // ----- Group 1（低戦力帯・単独）-----
+    const g1 = getGroup('Group 1');
+    if (g1) {
+      const lowPool = players.filter(p => p.pow >= g1.minPow && p.pow < g1.maxPow);
+      for (const p of lowPool) {
+        if (g1.members.length >= g1.max) break;
+        if (g1.members.some(m => m.name === p.name)) continue;
+        g1.members.push(p);
+        assignedGlobal.add(p.name);
+      }
+    }
+
+    const assignedNames = new Set(groups.flatMap(g => g.members.map(m => m.name)));
+    const unassigned = players.filter(p => !assignedNames.has(p.name));
+    return { groups, unassigned };
+  }
+
+  function renderDeployResult(result) {
+    const el = document.getElementById('deploy-result');
+    let html = '<div style="margin-top:16px;">';
+    result.groups.forEach(g => {
+      if (g.members.length === 0) return;
+      html += `<div class="deploy-result">
+        <div class="badge-title group-title">${g.name} (${g.members.length}名 / MAX ${g.max})</div>
+        <div class="player-list">${g.members.map(p => `${p.name} [${p.pow}]`).join('<br>')}</div>
+      </div>`;
+    });
+    if (result.unassigned.length > 0) {
+      html += `<div class="deploy-result">
+        <div class="group-title unassigned">⚠ 未配置 (${result.unassigned.length}名)</div>
+        <div class="player-list unassigned">${result.unassigned.map(p => `${p.name} [${p.pow}]`).join('<br>')}</div>
+      </div>`;
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  }
+
+  function renderMapOverlay(result) {
+    // --- マップ上バッジ ---
+    const container = document.getElementById('overlay-container');
+    container.innerHTML = '';
+    result.groups.forEach(g => {
+      const total = g.members.reduce((s, p) => s + p.pow, 0);
+      const rows = g.members.map(p =>
+        `<div class="badge-row"><span class="name-val">${p.name}</span><span class="pow-val">${p.pow}</span></div>`
+      ).join('');
+      const div = document.createElement('div');
+      div.className = 'overlay-badge ' + g.pos;
+      div.innerHTML = `
+        <div class="badge-title">${g.name}（${g.members.length}名）</div>
+        ${rows}
+        <div class="badge-total">
+          <span>合計</span>
+          <span class="total-val">${Math.round(total * 10) / 10}</span>
+        </div>`;
+      container.appendChild(div);
+    });
+
+    // --- マップ下グループカード（縦1列リスト）---
+    const listWrap = document.getElementById('group-list-container');
+    listWrap.innerHTML = '<div class="group-list-wrap">' +
+      result.groups.map(g => {
+        const total = g.members.reduce((s, p) => s + p.pow, 0);
+        const rows = g.members.length === 0
+          ? '<div style="color:#475569; font-size:11px;">メンバーなし</div>'
+          : g.members.map(p =>
+              `<div class="group-card-row"><span>${p.name}</span><span class="g-pow">${p.pow}</span></div>`
+            ).join('');
+        return `<div class="group-card">
+          <div class="group-card-title">${g.name}（${g.members.length}名）</div>
+          ${rows}
+          <div class="group-card-total">
+            <span>合計</span>
+            <span class="g-total-val">${(Math.round(total * 10) / 10).toFixed(1)}</span>
+          </div>
+        </div>`;
+      }).join('') +
+    '</div>';
+  }
+
+  // ===== 入力へ戻る =====
+  document.getElementById('back-to-input').addEventListener('click', () => showTab('input'));
+
+  // ===== 初期化 =====
+  renderConfigPanel();
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      players = JSON.parse(saved);
+      const text = players.map(p => `${p.name} ${p.pow}`).join('\n');
+      document.getElementById('player-raw-data').value = text;
+      document.getElementById('player-count').textContent = players.length + ' 名入力中';
+    } catch(e) {}
+  }
+
+})();
+</script>
 </body>
 </html>
-
-
-
-
-
-
- 
-
